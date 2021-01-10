@@ -1,0 +1,38 @@
+# Use postgres/example user/password credentials
+# Warning: identacao deve usar apenas espacos.
+version: '3.1'
+
+services:
+  db:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: sea_dbpass
+      POSTGRES_DB: sea_db
+    ports:
+      - 5432:5432
+    networks:
+      - postgres-network
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-dev@sea.ifrn.edu.br}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-adminsea}
+    ports:
+      - "${PGADMIN_PORT:-15432}:80"
+    networks:
+      - postgres-network
+      
+      
+    restart: unless-stopped
+      
+      
+networks:
+  postgres-network:
+    driver: bridge    
+
+
+      
