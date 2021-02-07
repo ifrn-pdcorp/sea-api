@@ -20,13 +20,21 @@ public class Event {
 	private String name;
 
 	@NotBlank
+	@Column(name = "local", nullable = false)
+	private String local;
+
+	@NotBlank
+	@Column(name = "theme", nullable = false)
+	private String theme;
+
+	@NotBlank
 	@Lob
 	@Column(name = "summary", nullable = false)
 	private String summary;
 
 	private String thumbPath;
-	
-	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
 	private List<Activity> activities;
 
 	@Column(name = "subscription_start", nullable = false)
@@ -35,40 +43,49 @@ public class Event {
 	@Column(name = "subscription_end", nullable = false)
 	private LocalDateTime subscriptionEnd;
 
+	@Column(name = "date_event", nullable = false)
+	private LocalDateTime dateEvent;
+
 	@ManyToOne
 	@NotNull
 	private User owner;
 
 	private boolean active;
-	
+
 	public void addActivity(Activity activity) {
 		this.activities.add(activity);
 	}
-	
-	public Event () {}
 
-	public Event(Long id, @NotBlank String name, @NotBlank String summary, String thumbPath, List<Activity> activities,
-			@NotNull LocalDateTime subscriptionStart, @NotNull LocalDateTime subscriptionEnd) {
+	public Event() {
+	}
+
+	public Event(Long id, @NotBlank String name, @NotBlank String local, @NotBlank String theme,
+			@NotBlank String summary, String thumbPath, List<Activity> activities,
+			@NotNull LocalDateTime subscriptionStart, @NotNull LocalDateTime subscriptionEnd,
+			@NotNull LocalDateTime dateEvent) {
 		this();
 		this.id = id;
 		this.name = name;
+		this.local = local;
+		this.theme = theme;
 		this.summary = summary;
 		this.thumbPath = thumbPath;
 		this.subscriptionStart = subscriptionStart;
 		this.subscriptionEnd = subscriptionEnd;
+		this.dateEvent = dateEvent;
 		this.activities = activities;
 	}
 
-	public Event(Long id, @NotBlank String name, @NotBlank String summary, String thumbPath, List<Activity> activities,
-			@NotNull LocalDateTime subscriptionStart, @NotNull LocalDateTime subscriptionEnd, @NotNull User owner) {
-		this(id, name, summary, thumbPath, activities, subscriptionStart, subscriptionEnd);
+	public Event(Long id, @NotBlank String name, @NotBlank String local, @NotBlank String theme,
+			@NotBlank String summary, String thumbPath, List<Activity> activities,
+			@NotNull LocalDateTime subscriptionStart, @NotNull LocalDateTime subscriptionEnd,
+			@NotNull LocalDateTime dateEvent, @NotNull User owner) {
+		this(id, name, local, theme, summary, thumbPath, activities, subscriptionStart, subscriptionEnd, dateEvent);
 		this.owner = owner;
 	}
-	
+
 	public boolean checkExistence(Activity activity) {
-		return this.getActivities()
-				.stream()
-				.anyMatch(act -> act.getId().equals(activity.getId()));
+		return this.getActivities().stream().anyMatch(act -> act.getId().equals(activity.getId()));
 	}
 
 	public Long getId() {
@@ -85,6 +102,22 @@ public class Event {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getLocal() {
+		return local;
+	}
+
+	public void setLocal(String local) {
+		this.local = local;
+	}
+
+	public String getTheme() {
+		return theme;
+	}
+
+	public void setTheme(String theme) {
+		this.theme = theme;
 	}
 
 	public String getSummary() {
@@ -119,6 +152,14 @@ public class Event {
 		this.subscriptionEnd = subscriptionEnd;
 	}
 
+	public LocalDateTime getDateEvent() {
+		return dateEvent;
+	}
+
+	public void setDateEvent(LocalDateTime dateEvent) {
+		this.dateEvent = dateEvent;
+	}
+
 	public User getOwner() {
 		return owner;
 	}
@@ -134,16 +175,16 @@ public class Event {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
+
 	public List<Activity> getActivities() {
 		return activities;
 	}
 
 	@Override
 	public String toString() {
-		return "Event [id=" + id + ", name=" + name + ", summary=" + summary + ", thumbPath=" + thumbPath
-				+ ", subscriptionStart=" + subscriptionStart + ", subscriptionEnd=" + subscriptionEnd + ", active="
-				+ active + "]";
+		return "Event [id=" + id + ", name=" + name + ", local=" + local + ", theme=" + theme + ", summary=" + summary
+				+ ", thumbPath=" + thumbPath + ", subscriptionStart=" + subscriptionStart + ", subscriptionEnd="
+				+ subscriptionEnd + ", dateEvent=" + dateEvent + ", active=" + active + "]";
 	}
 
 	@Override
