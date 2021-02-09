@@ -1,8 +1,10 @@
 package br.edu.ifrn.laj.pdcorp.apisea.controllers;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -123,11 +125,34 @@ public class EventController {
 		return new UploadFileDTO(fileName.toString(), fileDownloadUrl, file.getContentType(), file.getSize());
 	}
 
+	@ApiOperation(value = "Fazer upload de múltiplos arquivos para atividade especifica por id do evento e id da atividade")
+	@PostMapping("/event/{idEvent}/activity/{idActivity}/uploadMultipleFiles")
+	public List<UploadFileDTO> uploadMultipleFiles(@PathVariable Long idEvent, @PathVariable Long idActivity,
+			Principal principal, @RequestParam("files") MultipartFile[] files)
+			throws ApiEventException, ApiSubscriptionException {
+		return Arrays.asList(files).stream().map(file -> {
+			try {
+				return uploadFile(idEvent, idActivity, principal, file);
+			} catch (ApiEventException e) {
+				e.printStackTrace();
+			} catch (ApiSubscriptionException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}).collect(Collectors.toList());
+	}
+
 	@ApiOperation(value = "Obter url de download do arquivo por id da atividade e id do arquivo")
 	@GetMapping("/event/{idEvent}/activity/{idActivity}/downloadFileAdress/{idFile}")
 	public String downloadUrlFile(@PathVariable("idFile") Long id) {
 		File file = fileRepository.getOne(id);
 		return file.getFileAdress();
+	}
+
+	@ApiOperation(value = "Obter url de download dos arquivos de uma atividade por id da atividade")
+	@GetMapping("/event/{idEvent}/activity/{idActivity}/downloadFilesAdress")
+	public List<File> downloadUrlFiles(@PathVariable("idActivity") Long id) {
+		return fileRepository.findByIdActivity(id);
 	}
 
 	@ApiOperation(value = "Fazer download de arquivo por id do evento e id da atividade")
