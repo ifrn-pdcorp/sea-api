@@ -17,6 +17,12 @@ public class EventDTO {
 	@NotBlank
 	private String name;
 
+	@NotNull
+	private String local;
+
+	@NotNull
+	private String theme;
+
 	@NotBlank
 	private String summary;
 
@@ -26,31 +32,39 @@ public class EventDTO {
 	private LocalDateTime subscriptionStart;
 
 	private List<Activity> activities;
-	
 
 	@NotNull
 	private LocalDateTime subscriptionEnd;
+
+	@NotNull
+	private LocalDateTime dateEvent;
 
 	public EventDTO() {
 		super();
 	}
 
-	public EventDTO(@NotNull Long id, @NotBlank String name, @NotBlank String summary, String thumbPath, List<Activity> activities,
-			@NotNull LocalDateTime subscriptionStart, @NotNull LocalDateTime subscriptionEnd) {
+	public EventDTO(@NotNull Long id, @NotBlank String name, @NotBlank String local, @NotBlank String theme,
+			@NotBlank String summary, String thumbPath, List<Activity> activities,
+			@NotNull LocalDateTime subscriptionStart, @NotNull LocalDateTime subscriptionEnd,
+			@NotNull LocalDateTime dateEvent) {
 
 		this();
 		this.id = id;
 		this.name = name;
+		this.local = local;
+		this.theme = theme;
 		this.summary = summary;
 		this.thumbPath = thumbPath;
 		this.subscriptionStart = subscriptionStart;
 		this.subscriptionEnd = subscriptionEnd;
+		this.dateEvent = dateEvent;
 		this.activities = activities;
 	}
 
 	public EventDTO(Event event) {
-		this(event.getId(), event.getName(), event.getSummary(), event.getThumbPath(),event.getActivities(), event.getSubscriptionStart(),
-				event.getSubscriptionEnd());
+		this(event.getId(), event.getName(), event.getLocal(), event.getTheme(), event.getSummary(),
+				event.getThumbPath(), event.getActivities(), event.getSubscriptionStart(), event.getSubscriptionEnd(),
+				event.getDateEvent());
 	}
 
 	public static EventDTO convertFromModel(Event event) {
@@ -68,8 +82,9 @@ public class EventDTO {
 	}
 
 	public Event convertToModel() {
-		return new Event(this.getId(), this.getName(), this.getSummary(), this.getThumbPath(),this.getActivities(),
-				this.getSubscriptionStart(), this.getSubscriptionEnd());
+		return new Event(this.getId(), this.getName(), this.getLocal(), this.getTheme(), this.getSummary(),
+				this.getThumbPath(), this.getActivities(), this.getSubscriptionStart(), this.getSubscriptionEnd(),
+				this.getDateEvent());
 	}
 
 	public Long getId() {
@@ -86,6 +101,22 @@ public class EventDTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getLocal() {
+		return local;
+	}
+
+	public void setLocal(String local) {
+		this.local = local;
+	}
+
+	public String getTheme() {
+		return theme;
+	}
+
+	public void setTheme(String theme) {
+		this.theme = theme;
 	}
 
 	public String getSummary() {
@@ -120,6 +151,14 @@ public class EventDTO {
 		this.subscriptionEnd = subscriptionEnd;
 	}
 
+	public LocalDateTime getDateEvent() {
+		return dateEvent;
+	}
+
+	public void setDateEvent(LocalDateTime dateEvent) {
+		this.dateEvent = dateEvent;
+	}
+
 	public List<Activity> getActivities() {
 		return activities;
 	}
@@ -127,7 +166,5 @@ public class EventDTO {
 	public void setActivities(List<Activity> activities) {
 		this.activities = activities;
 	}
-	
-	
 
 }
